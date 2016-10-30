@@ -53,9 +53,9 @@ public class UsersServlet extends HttpServlet {
 				resp.getWriter().write("'latitude' is empty");
 				return;
 			}
-			String longtitude = req.getParameter("longtitude");
-			if(longtitude==null){
-				resp.getWriter().write("'longtitude' is empty");
+			String longitude = req.getParameter("longitude");
+			if(longitude==null){
+				resp.getWriter().write("'longitude' is empty");
 				return;
 			}
 			User user = ofy().load().type(User.class).filter("umid", umid).first().now();
@@ -64,7 +64,7 @@ public class UsersServlet extends HttpServlet {
 				user.umid = umid;
 			}
 			user.latitude = latitude;
-			user.longitude = longtitude;
+			user.longitude = longitude;
 			resp.setContentType("text/json");
 			resp.setStatus(HttpServletResponse.SC_OK);
 			ofy().save().entity(user).now();	
