@@ -9,9 +9,6 @@ import java.util.List;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.IOUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.somoto.datastoreObjects.User;
@@ -60,9 +57,12 @@ public class UsersServlet extends HttpServlet {
 			if(longtitude==null){
 				resp.getWriter().write("'longtitude' is empty");
 				return;
-			}	
-			User user = new User();
-			user.umid = umid;
+			}
+			User user = ofy().load().type(User.class).filter("umid", umid).first().now();
+			if(user==null){
+				user = new User();
+				user.umid = umid;
+			}
 			user.latitude = latitude;
 			user.longitude = longtitude;
 			resp.setContentType("text/json");
