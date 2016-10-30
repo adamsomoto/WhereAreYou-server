@@ -1,30 +1,40 @@
-<!DOCTYPE html>
 <html>
-<body>
 
-<p>Click the button to get your coordinates.</p>
+<head>
+    <title>The jQuery Example</title>
+    <script type = "text/javascript"
+            src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
-<button onclick="getLocation()">Try It</button>
+<body onload="getLocation()">
+
+<p>You're sending your location</p>
+
+
 
 <p id="demo"></p>
 
 <script>
-var x = document.getElementById("demo");
+    var x = document.getElementById("demo");
 
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
     }
-}
 
-function showPosition(position) {
-    x.innerHTML = "Latitude: " + position.coords.latitude +
-    "<br>Longitude: " + position.coords.longitude;
-}
+    function showPosition(position) {
+        x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+
+        $.post('/user', {latitude: position.coords.latitude,longitude:position.coords.longitude });
+    }
 </script>
 
 </body>
-</html>
+</head>
 
+
+
+</html>
