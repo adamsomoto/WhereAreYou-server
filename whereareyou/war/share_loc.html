@@ -25,11 +25,17 @@
     }
 
     function showPosition(position) {
+        var time = new Date().getTime();
         x.innerHTML = "Latitude: " + position.coords.latitude +
-            "<br>Longitude: " + position.coords.longitude;
+            "<br>Longitude: " + position.coords.longitude +
+            "<br>Last update: " + time;
+        $.post('/users', {latitude: position.coords.latitude,longitude:position.coords.longitude });
 
-        $.post('/user', {latitude: position.coords.latitude,longitude:position.coords.longitude });
+
     }
+
+    setInterval(getLocation,20*1000)
+
 </script>
 
 </body>

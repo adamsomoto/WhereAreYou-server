@@ -10,12 +10,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.somoto.datastoreObjects.User;
 
 public class UsersServlet extends HttpServlet {
 
-	private static final Gson GSON = new Gson();
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -40,11 +43,9 @@ public class UsersServlet extends HttpServlet {
 	
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		User user = new User();
-		user.umid = "1483";
-		user.location = "32,35";
-		ofy().save().entity(user).now();
-		
+		String body = IOUtils.toString(req.getInputStream(), "UTF-8");
+		User user = GSON.fromJson(body, User.class);		
+		ofy().save().entity(user).now();		
 	}
 	
 }
