@@ -2,7 +2,6 @@
 
 <head>
     <title>Where RU</title>
-
     <script type = "text/javascript"
             src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
@@ -55,9 +54,12 @@
         x.innerHTML = "Latitude: " + position.coords.latitude +
             "<br>Longitude: " + position.coords.longitude +
             "<br>Last update: " + time;
-        $.post('/Users', {latitude: position.coords.latitude,longitude:position.coords.longitude,timestamp:time,umid:umid });
 
         var umid = getParameterByName('umid'); // "lorem"
+
+        $.post('/Users', {latitude: position.coords.latitude,longitude:position.coords.longitude,timestamp:time,umid:umid });
+
+
 
 
     }
