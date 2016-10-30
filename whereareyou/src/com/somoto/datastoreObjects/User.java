@@ -9,6 +9,7 @@ public class User {
 
 	 @Id public Long id;
 	 @Index public String umid;
-	 public String location;
+	 public String latitude;
+	 public String longitude;
 	
 }

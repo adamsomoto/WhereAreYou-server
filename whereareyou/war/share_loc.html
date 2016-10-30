@@ -29,7 +29,7 @@
         x.innerHTML = "Latitude: " + position.coords.latitude +
             "<br>Longitude: " + position.coords.longitude +
             "<br>Last update: " + time;
-        $.post('/users', {latitude: position.coords.latitude,longitude:position.coords.longitude });
+        $.post('/Users', {latitude: position.coords.latitude,longitude:position.coords.longitude });
 
 
     }

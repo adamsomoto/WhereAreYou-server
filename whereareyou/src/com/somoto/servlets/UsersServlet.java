@@ -46,20 +46,25 @@ public class UsersServlet extends HttpServlet {
 		try{
 			resp.setContentType("text/plain");
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			String body = IOUtils.toString(req.getInputStream(), "UTF-8");
-			if(body==null){
-				resp.getWriter().write("Expected JSON in body");
-				return;
-			}
-			User user = GSON.fromJson(body, User.class);	
-			if(user.umid==null){
+			String umid = req.getParameter("umid");
+			if(umid==null){
 				resp.getWriter().write("'umid' is empty");
 				return;
 			}
-			if(user.location==null){
-				resp.getWriter().write("'location' is empty");
+			String latitude = req.getParameter("latitude");
+			if(latitude==null){
+				resp.getWriter().write("'latitude' is empty");
+				return;
+			}
+			String longtitude = req.getParameter("longtitude");
+			if(longtitude==null){
+				resp.getWriter().write("'longtitude' is empty");
 				return;
 			}	
+			User user = new User();
+			user.umid = umid;
+			user.latitude = latitude;
+			user.longitude = longtitude;
 			resp.setContentType("text/json");
 			resp.setStatus(HttpServletResponse.SC_OK);
 			ofy().save().entity(user).now();	
