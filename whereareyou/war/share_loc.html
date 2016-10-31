@@ -59,7 +59,9 @@
     }
     function getMyPosition(pos) {
         var crd = pos.coords;
-
+        if (crd.latitude == null) {
+            alert("Please activate GPS");
+        }
         console.log('Your current position is:');
         console.log('Latitude : ' + crd.latitude);
         console.log('Longitude: ' + crd.longitude);
