@@ -153,13 +153,6 @@
         for (var i = 0, feature; feature = features[i]; i++) {
             addMarker(feature);
         }
-
-        var bounds = new google.maps.LatLngBounds();
-        bounds.extend(features[1]);
-        bounds.extend(features[0]);
-        map.fitBounds(bounds);
-
-
     }//end of initMap
     setInterval(getLocation,20*1000)
 
