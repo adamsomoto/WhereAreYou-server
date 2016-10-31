@@ -22,18 +22,17 @@ public class UsersServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try{
-			String umidString = req.getParameter("umid");
+			String umidString = req.getParameter("umid");		
 			List<User> userList = new ArrayList<>();
-			if(umidString==null){
+			if(umidString==null){								
 				userList = ofy().load().type(User.class).list();
 			}
-			else{
+			else{				
 				String[] split = umidString.split(",");
 				for(String umid : split){
 					User user = ofy().load().type(User.class).filter("umid", umid).first().now();
 					userList.add(user);
-				}
-	
+				}	
 			}
 			String json = GSON.toJson(userList);
 			resp.setContentType("text/plain");
@@ -56,25 +55,22 @@ public class UsersServlet extends HttpServlet {
 			if(umid==null){
 				resp.getWriter().write("'umid' is empty");
 				return;
-			}
-			String latitude = req.getParameter("latitude");
-			if(latitude==null){
-				resp.getWriter().write("'latitude' is empty");
-				return;
-			}
-			String longitude = req.getParameter("longitude");
-			if(longitude==null){
-				resp.getWriter().write("'longitude' is empty");
-				return;
-			}
+			}			
 			User user = ofy().load().type(User.class).filter("umid", umid).first().now();
 			if(user==null){
 				user = new User();
 				user.umid = umid;
 				user.creation_time = new Date();
+			}			
+			user.last_update = new Date();
+			String latitude = req.getParameter("latitude");
+			if(latitude!=null){
+				user.latitude = latitude;
 			}
-			user.latitude = latitude;
-			user.longitude = longitude;
+			String longitude = req.getParameter("longitude");
+			if(longitude!=null){
+				user.longitude = longitude;
+			}					
 			resp.setContentType("text/json");
 			resp.setStatus(HttpServletResponse.SC_OK);
 			ofy().save().entity(user).now();	
