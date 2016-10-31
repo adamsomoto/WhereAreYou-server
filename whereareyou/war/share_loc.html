@@ -86,14 +86,17 @@
         $.post('/Users', {latitude: position.coords.latitude,longitude:position.coords.longitude,umid:umid });
 
 
-        $.get('/Users/?umid='+android_id, function( data ){
-            alert(data);
+        var data = $.get('/Users/?umid='+android_id, function( data ){
+            return data;
         });
 
-
+        var lon1 = position.coords.latitude;
+        var lat1 = position.coords.longitude;
+        var lon2 = data.longitude;
+        var lat2 = data.latitude;
 
         var location1 = [position.coords.latitude, position.coords.longitude] ;
-        var location2 = [32.1191786,34.8248102];
+        var location2 = [lat2,lon2];
 
         var hour = time.getHours();
         var minutes = "0" + time.getMinutes();
