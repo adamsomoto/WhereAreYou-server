@@ -91,12 +91,17 @@
         $.post('/Users', {latitude: crd.latitude ,longitude:crd.longitude,umid:batman_id });
     }
     function getUmiPosition() {
-        $.get('/Users/?umid='+android_id, function( data ) {
-            data.latitude= 32.1191786;
-            data.longitude= 34.1191786;
+        $.ajax({
+            dataType: "json",
+            url: '/Users/',
+            data: {umid:android_id},
+            success: function( data ) {
 
-            lon2 = data.latitude;
-            lat2 = data.longitude;
+                $.each( data, function( i, item ) {
+                    lon2 = item.latitude;
+                    lat2 = item.longitude;
+                });
+            }
 
         });
     }
