@@ -16,7 +16,7 @@ import com.somoto.datastoreObjects.User;
 public class DeleteOldUsersServlet extends HttpServlet {
 
 	@Override
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try{	
 			Date tenMinutesAgo = new Date(System.currentTimeMillis() - 10 * 60 * 1000);
 			List<User> oldUsers = ofy().load().type(User.class).filter("creation_time <", tenMinutesAgo).list();			
