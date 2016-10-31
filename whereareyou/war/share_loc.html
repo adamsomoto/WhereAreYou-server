@@ -4,42 +4,40 @@
     <title>Where RU</title>
     <script type = "text/javascript"
             src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
 
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 85%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
 
-
-<body onload="getLocation()">
-
-
-
-
-<p id="demo"></p>
-
+<body  onload="getLocation()" >
 <div id="map"></div>
-
+<p id="coord"></p>
+</body>
 <script>
+    var x = document.getElementById("coord");
+    var map;
+    // Batman
+    var lon1 = 33.1091786;
+    var lat1 = 35.8448102;
+    //umi
+    var lon2 = "";
+    var lat2 = "";
 
-    var x = document.getElementById("demo");
-
-    function getParameterByName(name, url) {
-        if (!url) {
-            url = window.location.href;
-        }
-        name = name.replace(/[\[\]]/g, "\\$&");
-        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-            results = regex.exec(url);
-        if (!results) return null;
-        if (!results[2]) return '';
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
-    }
-
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    }
-
+    var batman_id = getParameterByName('umid'); // "Batman"
+    var android_id = getParameterByName('androidid'); // Umi
     function getParameterByName(name, url) {
         if (!url) {
             url = window.location.href;
@@ -52,6 +50,106 @@
         //return decodeURIComponent(results[2].replace(/\+/g, " "));
         return results[2];
     }
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(getMyPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    function getMyPosition(pos) {
+        var crd = pos.coords;
+
+        console.log('Your current position is:');
+        console.log('Latitude : ' + crd.latitude);
+        console.log('Longitude: ' + crd.longitude);
+        console.log('More or less ' + crd.accuracy + ' meters.');
+
+        lon1 = crd.latitude ;
+        lat1 = crd.longitude;
+
+        getUmiPosition();
+        postMyPosition(crd);
+        initMap();
+        var time = new Date();
+        var hour = time.getHours();
+        var minutes = "0" + time.getMinutes();
+        var seconds = "0" + time.getSeconds();
+        var formatted =  hour + ':' + minutes.substr(-2) + ':' + seconds.substr(-2) ;
+
+        var dist = distance([lat1,lon1],[lat2,lon2]);
+        x.innerHTML = "You're sending your location"+
+            "<br>Last update: " + formatted +
+            "<br>Distance: "+dist.toFixed(2)+' km';
+        x.style.position = "absolute";
+        x.style.bottom = "0px";
+        x.style.textAlign = "center";
+        x.style.width = "100%";
+
+    };
+    function postMyPosition(crd) {
+        $.post('/Users', {latitude: crd.latitude ,longitude:crd.longitude,umid:batman_id });
+    }
+    function getUmiPosition() {
+        $.get('/Users/?umid='+android_id, function( data ) {
+            data.latitude= 32.1191786;
+            data.longitude= 34.1191786;
+
+            lon2 = data.latitude;
+            lat2 = data.longitude;
+
+        });
+    }
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: new google.maps.LatLng(lon1, lat1),
+            mapTypeId: 'roadmap'
+        });
+
+        var iconBase = 'https://maps.google.com/mapfiles/kml/';
+        var icons = {
+            me: {
+                icon: iconBase + 'paddle/I.png'
+            },
+            other: {
+                icon: iconBase + 'paddle/grn-circle.png'
+            },
+            info: {
+                icon: iconBase + 'info-i_maps.png'
+            }
+        };
+
+        function addMarker(feature) {
+            var marker = new google.maps.Marker({
+                position: feature.position,
+                icon: icons[feature.type].icon,
+                map: map
+            });
+        }
+
+        var features = [
+            {
+                position: new google.maps.LatLng(lon1, lat1),
+                type: 'me'
+            }
+        ];
+
+        if(lon2.length >0 && lat2.length > 0 ){
+            features.push(
+                {
+                    position: new google.maps.LatLng(lon2, lat2),
+                    type: 'other'
+                }
+            );
+
+        }
+
+        for (var i = 0, feature; feature = features[i]; i++) {
+            addMarker(feature);
+        }
+    }//end of initMap
+    setInterval(getLocation,20*1000)
 
     function distance(location1, location2) {
         var radius = 6371; // Earth's radius in kilometers
@@ -71,65 +169,7 @@
         return deg * (Math.PI/180)
     }
 
-    var lon1 = 32.1091786;
-    var lat1 = 34.8448102;
-    var lon2 = 32.1191786;
-    var lat2 = 34.1191786;
-
-    function showPosition(position) {
-        var time = new Date();
-
-        var umid = getParameterByName('umid'); // "lorem"
-        var android_id = getParameterByName('androidid'); // android_id
-
-
-        $.post('/Users', {latitude: position.coords.latitude,longitude:position.coords.longitude,umid:umid });
-
-
-        var data = $.get('/Users/?umid='+android_id, function( data ){
-            return data;
-        });
-
-        var lon1 = position.coords.latitude;
-        var lat1 = position.coords.longitude;
-        var lon2 = data.longitude;
-        var lat2 = data.latitude;
-
-        var location1 = [position.coords.latitude, position.coords.longitude] ;
-        var location2 = [lat2,lon2];
-
-        var hour = time.getHours();
-        var minutes = "0" + time.getMinutes();
-        var seconds = "0" + time.getSeconds();
-        var formatted =  hour + ':' + minutes.substr(-2) + ':' + seconds.substr(-2) ;
-
-        var dist = distance(location1,location2);
-        x.innerHTML = "You're sending your location"+
-            "<br>Latitude: " + position.coords.latitude +
-            "<br>Longitude: " + position.coords.longitude +
-            "<br>Last update: " + formatted +
-            "<br>Distance: "+dist.toFixed(2)+' km';
-        x.style.position = "absolute";
-        x.style.bottom = "0px";
-        x.style.textAlign = "center";
-        x.style.width = "100%";
-
-
-    }
-
-
-
-
-
-    setInterval(getLocation,20*1000)
-
 </script>
-
-
-
-</body>
-</head>
-
-
-
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIOvFXcQiyFKGBqiKei3BF2YCnONIbdr0&callback=initMap"></script>
 </html>
