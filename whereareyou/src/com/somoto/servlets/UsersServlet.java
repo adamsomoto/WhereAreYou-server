@@ -22,7 +22,7 @@ public class UsersServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try{
-			String umidString = req.getParameter("umid");
+			String umidString = req.getPathInfo();
 			List<User> userList = new ArrayList<>();
 			if(umidString==null){
 				userList = ofy().load().type(User.class).list();
