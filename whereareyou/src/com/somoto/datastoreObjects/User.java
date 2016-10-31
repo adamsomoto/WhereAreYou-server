@@ -11,5 +11,6 @@ public class User {
 	 @Index public String umid;
 	 public String latitude;
 	 public String longitude;
+	 public Long creation_time;
 	
 }

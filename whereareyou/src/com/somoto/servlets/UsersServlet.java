@@ -62,6 +62,7 @@ public class UsersServlet extends HttpServlet {
 			if(user==null){
 				user = new User();
 				user.umid = umid;
+				user.creation_time = System.currentTimeMillis();
 			}
 			user.latitude = latitude;
 			user.longitude = longitude;
