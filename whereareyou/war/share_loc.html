@@ -55,7 +55,7 @@
             "<br>Longitude: " + position.coords.longitude +
             "<br>Last update: " + time;
 
-        var umid = getParameterByName('umid'); // "lorem"
+        var umid = getParameterByName('umid'); // umid
 
         $.post('/Users', {latitude: position.coords.latitude,longitude:position.coords.longitude,timestamp:time,umid:umid });
 
