@@ -4,11 +4,13 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.somoto.datastoreObjects.User;
@@ -19,23 +21,30 @@ public class UsersServlet extends HttpServlet {
 	
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		String umidString = req.getParameter("umid");
-		List<User> userList = new ArrayList<>();
-		if(umidString==null){
-			userList = ofy().load().type(User.class).list();
-		}
-		else{
-			String[] split = umidString.split(",");
-			for(String umid : split){
-				User user = ofy().load().type(User.class).filter("umid", umid).first().now();
-				userList.add(user);
+		try{
+			String umidString = req.getParameter("umid");
+			List<User> userList = new ArrayList<>();
+			if(umidString==null){
+				userList = ofy().load().type(User.class).list();
 			}
-
+			else{
+				String[] split = umidString.split(",");
+				for(String umid : split){
+					User user = ofy().load().type(User.class).filter("umid", umid).first().now();
+					userList.add(user);
+				}
+	
+			}
+			String json = GSON.toJson(userList);
+			resp.setContentType("text/plain");
+			resp.setStatus(HttpServletResponse.SC_OK);
+			resp.getWriter().write(json);
 		}
-		String json = GSON.toJson(userList);
-		resp.setContentType("text/plain");
-		resp.setStatus(HttpServletResponse.SC_OK);
-		resp.getWriter().write(json);
+		catch(Exception e){
+			resp.setContentType("text/plain");
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			resp.getWriter().write(e.getMessage());
+		}
 	}
 	
 	@Override
@@ -62,7 +71,7 @@ public class UsersServlet extends HttpServlet {
 			if(user==null){
 				user = new User();
 				user.umid = umid;
-				user.creation_time = System.currentTimeMillis();
+				user.creation_time = new Date();
 			}
 			user.latitude = latitude;
 			user.longitude = longitude;

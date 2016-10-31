@@ -1,5 +1,7 @@
 package com.somoto.datastoreObjects;
 
+import java.util.Date;
+
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -11,6 +13,6 @@ public class User {
 	 @Index public String umid;
 	 public String latitude;
 	 public String longitude;
-	 @Index public Long creation_time;
+	 @Index public Date creation_time;
 	
 }
