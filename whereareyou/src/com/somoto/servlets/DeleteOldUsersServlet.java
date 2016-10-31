@@ -17,7 +17,7 @@ public class DeleteOldUsersServlet extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try{	
 			long time = System.currentTimeMillis()-30*60*1000;
-			List<User> oldUsers = ofy().load().type(User.class).filter("current_time <", time).list();
+			List<User> oldUsers = ofy().load().type(User.class).filter("creation_time <", time).list();
 			ofy().delete().entities(oldUsers);
 			resp.setContentType("text/plain");
 			resp.setStatus(HttpServletResponse.SC_OK);
