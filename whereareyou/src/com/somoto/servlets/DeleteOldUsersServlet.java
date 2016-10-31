@@ -3,6 +3,7 @@ package com.somoto.servlets;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,9 +18,18 @@ public class DeleteOldUsersServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try{	
-			Date date = new Date(System.currentTimeMillis() - 30 * 60 * 1000);
-			List<User> oldUsers = ofy().load().type(User.class).filter("creation_time <", date).list();
+			Date tenMinutesAgo = new Date(System.currentTimeMillis() - 10 * 60 * 1000);
+			List<User> oldUsers = ofy().load().type(User.class).filter("creation_time <", tenMinutesAgo).list();			
 			ofy().delete().entities(oldUsers);
+			List<User> startedUsers = ofy().load().type(User.class).filter("creation_time !=", 0).list();
+			List<User> inactiveUsers = new ArrayList<>();
+			for(User iter : startedUsers){
+				long inactiveTime = System.currentTimeMillis() - iter.last_update.getTime();
+				if(inactiveTime>60*1000){
+					inactiveUsers.add(iter);
+				}
+			}
+			ofy().delete().entities(inactiveUsers);
 			resp.setContentType("text/plain");
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.getWriter().write("Deleted "+oldUsers.size()+" users");

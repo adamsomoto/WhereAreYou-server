@@ -2,6 +2,6 @@
 <cronentries>
   <cron>
     <url>/DeleteOldUsers</url>
-    <schedule>every 10 minutes</schedule>
+    <schedule>every 1 minutes</schedule>
   </cron>
 </cronentries>
