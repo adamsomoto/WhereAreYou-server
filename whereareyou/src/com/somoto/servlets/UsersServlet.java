@@ -22,18 +22,18 @@ public class UsersServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try{
-			String umidString = req.getPathInfo().replaceAll("/", "");
+			String pathInfo = req.getPathInfo();			
 			List<User> userList = new ArrayList<>();
-			if(umidString==null){
+			if(pathInfo==null){								
 				userList = ofy().load().type(User.class).list();
 			}
 			else{
+				String umidString = pathInfo.replaceAll("/", "");
 				String[] split = umidString.split(",");
 				for(String umid : split){
 					User user = ofy().load().type(User.class).filter("umid", umid).first().now();
 					userList.add(user);
-				}
-	
+				}	
 			}
 			String json = GSON.toJson(userList);
 			resp.setContentType("text/plain");
