@@ -22,13 +22,12 @@ public class UsersServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try{
-			String pathInfo = req.getPathInfo();			
+			String umidString = req.getParameter("umid");		
 			List<User> userList = new ArrayList<>();
-			if(pathInfo==null){								
+			if(umidString==null){								
 				userList = ofy().load().type(User.class).list();
 			}
-			else{
-				String umidString = pathInfo.replaceAll("/", "");
+			else{				
 				String[] split = umidString.split(",");
 				for(String umid : split){
 					User user = ofy().load().type(User.class).filter("umid", umid).first().now();
