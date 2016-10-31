@@ -72,6 +72,7 @@ public class UsersServlet extends HttpServlet {
 				user.umid = umid;
 				user.creation_time = new Date();
 			}
+			user.last_update = new Date();
 			user.latitude = latitude;
 			user.longitude = longitude;
 			resp.setContentType("text/json");

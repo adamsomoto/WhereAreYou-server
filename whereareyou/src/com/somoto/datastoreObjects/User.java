@@ -14,5 +14,6 @@ public class User {
 	 public String latitude;
 	 public String longitude;
 	 @Index public Date creation_time;
+	 @Index public Date last_update;
 	
 }
