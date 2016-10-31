@@ -107,7 +107,7 @@
     }
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 14,
+            zoom: 15,
             center: new google.maps.LatLng(lon1, lat1),
             mapTypeId: 'roadmap'
         });
@@ -153,6 +153,13 @@
         for (var i = 0, feature; feature = features[i]; i++) {
             addMarker(feature);
         }
+
+        var bounds = new google.maps.LatLngBounds();
+        bounds.extend(features[1]);
+        bounds.extend(features[0]);
+        map.fitBounds(bounds);
+
+
     }//end of initMap
     setInterval(getLocation,20*1000)
 
