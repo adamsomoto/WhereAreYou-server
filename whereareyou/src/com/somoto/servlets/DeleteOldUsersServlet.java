@@ -19,7 +19,8 @@ public class DeleteOldUsersServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try{	
 			Date tenMinutesAgo = new Date(System.currentTimeMillis() - 10 * 60 * 1000);
-			List<User> oldUsers = ofy().load().type(User.class).filter("creation_time <", tenMinutesAgo).list();			
+			List<User> oldUsers = ofy().load().type(User.class).filter("creation_time <", tenMinutesAgo).list();
+			removeTestUsersFromList(oldUsers);
 			ofy().delete().entities(oldUsers);
 			List<User> startedUsers = ofy().load().type(User.class).filter("creation_time !=", 0).list();
 			List<User> inactiveUsers = new ArrayList<>();
@@ -29,6 +30,7 @@ public class DeleteOldUsersServlet extends HttpServlet {
 					inactiveUsers.add(iter);
 				}
 			}
+			removeTestUsersFromList(inactiveUsers);
 			ofy().delete().entities(inactiveUsers);
 			resp.setContentType("text/plain");
 			resp.setStatus(HttpServletResponse.SC_OK);
@@ -39,6 +41,16 @@ public class DeleteOldUsersServlet extends HttpServlet {
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			resp.getWriter().write(e.getMessage());
 		}
+	}
+	
+	private static void removeTestUsersFromList(List<User> list){
+		List<User> testUsers = new ArrayList<>();
+		for(User iter : list){
+			if(iter.umid.contains("test")){
+				testUsers.add(iter);
+			}
+		}
+		list.removeAll(testUsers);
 	}
 	
 }
