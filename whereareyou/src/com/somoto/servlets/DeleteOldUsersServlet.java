@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,26 +16,32 @@ import com.somoto.datastoreObjects.User;
 
 public class DeleteOldUsersServlet extends HttpServlet {
 
+	//private static final Logger log = Logger.getLogger(DeleteOldUsersServlet.class.getName());
+	
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try{	
 			Date tenMinutesAgo = new Date(System.currentTimeMillis() - 10 * 60 * 1000);
 			List<User> oldUsers = ofy().load().type(User.class).filter("creation_time <", tenMinutesAgo).list();
 			removeTestUsersFromList(oldUsers);
+			resp.getWriter().write("oldUsers "+oldUsers.size()+" users\n");
 			ofy().delete().entities(oldUsers);
-			List<User> startedUsers = ofy().load().type(User.class).filter("creation_time !=", null).list();
+			List<User> allUsers = ofy().load().type(User.class).list();
 			List<User> inactiveUsers = new ArrayList<>();
-			for(User iter : startedUsers){
+			for(User iter : allUsers){
+				if(iter.latitude==null){
+					continue;
+				}
 				long inactiveTime = System.currentTimeMillis() - iter.last_update.getTime();
 				if(inactiveTime>60*1000){
 					inactiveUsers.add(iter);
 				}
 			}
 			removeTestUsersFromList(inactiveUsers);
+			resp.getWriter().write("inactiveUsers "+inactiveUsers.size()+" users");
 			ofy().delete().entities(inactiveUsers);
 			resp.setContentType("text/plain");
-			resp.setStatus(HttpServletResponse.SC_OK);
-			resp.getWriter().write("Deleted "+oldUsers.size()+" users");
+			resp.setStatus(HttpServletResponse.SC_OK);		
 		}
 		catch(Exception e){
 			resp.setContentType("text/plain");
