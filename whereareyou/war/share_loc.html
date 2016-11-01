@@ -70,9 +70,12 @@
         lon1 = crd.latitude ;
         lat1 = crd.longitude;
 
-        getUmiPosition();
+
         postMyPosition(crd);
         initMap();
+
+        getUmiPosition();
+
         var time = new Date();
         var hour = time.getHours();
         var minutes = "0" + time.getMinutes();
@@ -101,11 +104,10 @@
             console.log("data:"+data);
                 $.each( data, function( i, item ) {
 
-                 //   lon2 = item.latitude;
-                 //   lat2 = item.longitude;
-                    lon2 = 31.77359;
-                    lat2 =35.2270227;
+                   lon2 = item.latitude;
+                   lat2 = item.longitude;
                 });
+                initMap();
             }
 
         });
