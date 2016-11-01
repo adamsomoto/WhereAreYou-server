@@ -98,10 +98,13 @@
             url: '/Users/',
             data: {umid:android_id},
             success: function( data ) {
-
+            console.log("data:"+data);
                 $.each( data, function( i, item ) {
-                    lon2 = item.latitude;
-                    lat2 = item.longitude;
+
+                 //   lon2 = item.latitude;
+                 //   lat2 = item.longitude;
+                    lon2 = 31.77359;
+                    lat2 =35.2270227;
                 });
             }
 
@@ -159,6 +162,8 @@
     setInterval(getLocation,20*1000)
 
     function distance(location1, location2) {
+        console.log("location1:"+location1);
+        console.log("location2:"+location2);
         var radius = 6371; // Earth's radius in kilometers
         var latDelta = deg2rad(location2[0] - location1[0]);
         var lonDelta = deg2rad(location2[1] - location1[1]);
