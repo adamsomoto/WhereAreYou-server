@@ -22,7 +22,7 @@ public class DeleteOldUsersServlet extends HttpServlet {
 			List<User> oldUsers = ofy().load().type(User.class).filter("creation_time <", tenMinutesAgo).list();
 			removeTestUsersFromList(oldUsers);
 			ofy().delete().entities(oldUsers);
-			List<User> startedUsers = ofy().load().type(User.class).filter("creation_time !=", 0).list();
+			List<User> startedUsers = ofy().load().type(User.class).filter("creation_time !=", null).list();
 			List<User> inactiveUsers = new ArrayList<>();
 			for(User iter : startedUsers){
 				long inactiveTime = System.currentTimeMillis() - iter.last_update.getTime();
