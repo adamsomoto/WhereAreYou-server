@@ -29,7 +29,7 @@ public class DeleteOldUsersServlet extends HttpServlet {
 			List<User> allUsers = ofy().load().type(User.class).list();
 			List<User> inactiveUsers = new ArrayList<>();
 			for(User iter : allUsers){
-				if(iter.latitude==null){
+				if(iter.lat==null){
 					continue;
 				}
 				long inactiveTime = System.currentTimeMillis() - iter.last_update.getTime();

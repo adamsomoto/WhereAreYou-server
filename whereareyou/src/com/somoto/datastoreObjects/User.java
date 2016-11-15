@@ -11,8 +11,8 @@ public class User {
 
 	 @Id public Long id;
 	 @Index public String umid;
-	 public String latitude;
-	 public String longitude;
+	 public Float lat;
+	 public Float lng;
 	 @Index public Date creation_time;
 	 @Index public Date last_update;
 	

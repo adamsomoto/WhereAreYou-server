@@ -1,13 +1,36 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+var map;
+var il = {lat: 32, lng: 34};
+var markers = [];
 
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Where are you</title>
-  </head>
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 4,
+      center: il
+    });  
+  }
 
-  <body>
-    <h1>You are now sharing your location</h1>
-	<h2>not really</h2>
-  </body>
-</html>
+function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
+}
+   
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope, $http) {
+    $http.get("http://2-dot-whereareyou-148008.appspot.com/Users")
+    .then(function(response) { 
+        for (i in markers) {
+          markers[i].setMap(null);
+        }
+        markers = [];
+        for(i in response.data){
+            var iter = response.data[i];
+            var marker = new google.maps.Marker({
+                position: {lat: iter.lat, lng: iter.lng},
+                map: map
+            });
+            markers.push(marker);
+        }
+        
+    });
+});

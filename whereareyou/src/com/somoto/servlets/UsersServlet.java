@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.somoto.datastoreObjects.User;
+import com.somoto.util.Debug;
 
 public class UsersServlet extends HttpServlet {
 
@@ -36,6 +37,9 @@ public class UsersServlet extends HttpServlet {
 			}
 			String json = GSON.toJson(userList);
 			resp.setContentType("text/plain");
+			if(Debug.isOn()){
+				resp.setHeader("Access-Control-Allow-Origin", "*");
+			}
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.getWriter().write(json);
 		}
@@ -63,15 +67,18 @@ public class UsersServlet extends HttpServlet {
 				user.creation_time = new Date();
 			}			
 			user.last_update = new Date();
-			String latitude = req.getParameter("latitude");
-			if(latitude!=null){
-				user.latitude = latitude;
+			String lat = req.getParameter("lat");
+			if(lat!=null){
+				user.lat = Float.parseFloat(lat);
 			}
-			String longitude = req.getParameter("longitude");
-			if(longitude!=null){
-				user.longitude = longitude;
+			String lng = req.getParameter("lng");
+			if(lng!=null){
+				user.lng = Float.parseFloat(lng);
 			}					
 			resp.setContentType("text/json");
+			if(Debug.isOn()){
+				resp.setHeader("Access-Control-Allow-Origin", "*");
+			}		
 			resp.setStatus(HttpServletResponse.SC_OK);
 			ofy().save().entity(user).now();	
 		}
