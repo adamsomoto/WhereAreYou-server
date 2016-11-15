@@ -1,36 +1,12 @@
-var map;
-var il = {lat: 32, lng: 34};
-var markers = [];
-
-function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 4,
-      center: il
-    });  
-  }
-
-function setMapOnAll(map) {
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(map);
-    }
-}
-   
-var app = angular.module('myApp', []);
-app.controller('myCtrl', function($scope, $http) {
-    $http.get("http://2-dot-whereareyou-148008.appspot.com/Users")
-    .then(function(response) { 
-        for (i in markers) {
-          markers[i].setMap(null);
-        }
-        markers = [];
-        for(i in response.data){
-            var iter = response.data[i];
-            var marker = new google.maps.Marker({
-                position: {lat: iter.lat, lng: iter.lng},
-                map: map
-            });
-            markers.push(marker);
-        }
-        
-    });
-});
+<!DOCTYPE html>
+<html>   
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="map.js"/></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8NBg3uqCNg0JsY0_ZS5_NbefkWOtTpBw&callback=initMap"></script>  
+    <link rel="stylesheet" href="map.css">
+</head>
+<body>
+    <div id="map" ng-app="myApp" ng-controller="myCtrl"></div>
+</body>
+</html>
