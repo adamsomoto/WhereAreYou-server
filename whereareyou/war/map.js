@@ -22,12 +22,15 @@ app.controller('myCtrl', function($scope, $http) {
     
     if (navigator.geolocation) {
         markMyLocation();
-    }
-    
+        if(myTicket){
+            doPostWithMyLocation($http, myTicket);
+        }
+    }   
+   
 });
 
 function doGetAndMarkFriend($http, friendTicket){
-    $http.get("http://2-dot-whereareyou-148008.appspot.com/Users/"+friendTicket)
+    $http.get("http://2-dot-whereareyou-148008.appspot.com/Users?umid="+friendTicket)
     .then(function(response) { 
         for (i in friendMarkers) {
           friendMarkers[i].setMap(null);
@@ -44,21 +47,27 @@ function doGetAndMarkFriend($http, friendTicket){
     });
 }
 
-function markMyLocation(){
+function markMyLocation($http, myTicket){
     navigator.geolocation.getCurrentPosition(function(position){
         var coords = position.coords;
+        var latlng = {lat: coords.latitude, lng: coords.longitude};
         myMarker = new google.maps.Marker({
-            position: {lat: coords.latitude, lng: coords.longitude},
+            position: latlng,
             map: map,
             icon: 'beachflag.png'
         });
     });
 }
 
-function getParameterByName(name, url) {
-    if (!url) {
-      url = window.location.href;
-    }
+function doPostWithMyLocation($http, myTicket){
+    navigator.geolocation.getCurrentPosition(function(position){
+        var coords = position.coords;   
+        $http.post("http://2-dot-whereareyou-148008.appspot.com/Users?umid="+myTicket+'&lat='+coords.latitude+'&lng='+coords.longitude);
+    });
+}
+
+function getParameterByName(name) {
+    var url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
